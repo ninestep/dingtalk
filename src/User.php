@@ -4,8 +4,6 @@
 namespace Shenhou\Dingtalk;
 
 
-use GuzzleHttp\Client;
-use think\Exception;
 
 class User
 {
@@ -14,7 +12,7 @@ class User
      * 用免登code换取用户信息
      * @param string $code 钉钉免登code
      * @return array 用户信息
-     * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getUserInfo(string $code): array
     {
@@ -29,7 +27,7 @@ class User
      * @param int $cursor 游标
      * @param int $size 煤业大小
      * @return array
-     * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function list(int $dept_id = 1, int $cursor = 0, int $size = 10): array
     {
@@ -44,7 +42,7 @@ class User
      * 获取部门用户userid列表
      * @param int $dept_id 部门id
      * @return array
-     * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function listid(int $dept_id = 1): array
     {
@@ -58,7 +56,6 @@ class User
      * @param string $userid 用户id
      * @param string $language 通讯录语言。zh_CN：中文（默认值）en_US：英文
      * @return array
-     * @throws Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function get(string $userid, string $language = 'zh_CN'): array

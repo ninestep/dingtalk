@@ -13,13 +13,12 @@ class Message
      * @param array $dept_id_list 接收者的部门id列表，最大列表长度20。
      * @param false $to_all_user 是否发送给企业全部用户。
      * @return array
-     * @throws Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function corpconversationAsyncsendV2($msg, $userid_list = [], $dept_id_list = [], $to_all_user = false)
     {
         if (empty($userid_list) && empty($dept_id_list) && !$to_all_user) {
-            throw new Exception('发送对象不能为空');
+            throw new DingTalkException('发送对象不能为空');
         }
         $data = [
             'msg' => json_encode($msg),
