@@ -1,0 +1,23 @@
+{
+  "name": "shenzhou/dingtalk",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Shenhou\\Dingtalk\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "yb",
+      "email": "859696354@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "guzzlehttp/guzzle": "^7.3",
+    "symfony/cache": "^5.3"
+  },
+  "require-dev": {
+    "php": ">=5.4"
+  }
+}
