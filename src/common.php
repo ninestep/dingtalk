@@ -7,6 +7,13 @@ use GuzzleHttp\Client;
 
 class common extends DingTalk
 {
+    /**
+     * 获取配置
+     * @param null|string $key 如果为空则返回全部配置否则返回对应配置内容
+     * @return mixed|null
+     * @throws DingTalkException
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     public static function config($key = null)
     {
         if (Cache::has('config')) {
@@ -16,7 +23,7 @@ class common extends DingTalk
         }
         if ($key != null) {
             if (empty($config[$key])) {
-                throw new DingTalkException($key . '配置信息为空');
+                return null;
             }
             return $config[$key];
         } else {
@@ -31,20 +38,80 @@ class common extends DingTalk
      */
     public static function getAccessToken()
     {
+        //开发类型。self企业内部应用开发，customize服务商定制应用,suite第三方定制
+        $type = 'self';
+        $url = 'https://oapi.dingtalk.com/gettoken';
         $appkey = self::config('AppKey');
-        $cacheKey = 'access_token_' . $appkey;
+        if (empty($appkey)) {
+            $appkey = self::config('CustomKey');
+            $type = 'customize';
+            $url = 'https://oapi.dingtalk.com/service/get_corp_token';
+        }
+        if (empty($appkey)) {
+            $appkey = self::config('SuiteKey');
+            $type = 'suite';
+            $url = 'https://oapi.dingtalk.com/service/get_suite_token';
+        }
+        if (empty($appkey)) {
+            throw new DingTalkException('配置获取错误');
+        }
+
+        $cacheKey = 'access_token_' . $type . '_' . $appkey;
         if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         } else {
-            $AppSecret = self::config('AppSecret');
+            switch ($type) {
+                case 'self':
+                    $AppSecret = self::config('AppSecret');
+                    break;
+                case 'customize':
+                    $AppSecret = self::config('CustomSecret');
+                    break;
+                case 'suite':
+                    $AppSecret = self::config('SuiteSecret');
+                    break;
+                default:
+                    throw new DingTalkException('配置获取错误');
+            }
+            $set = ['appkey' => $appkey, 'appsecret' => $AppSecret];
+            if ($type == 'customize') {
+                $set = [
+                    'accessKey' => $appkey,
+                    'accessSecret' => $AppSecret,
+                    'suiteTicket' => self::config('suiteTicket'),
+                    'auth_corpid' => self::config('corpId'),
+                ];
+            }
+            if ($type == 'suite') {
+                $set = [
+                    'suite_key' => $appkey,
+                    'suite_secret' => $AppSecret,
+                    'suite_ticket' => self::config('suiteTicket')
+                ];
+            }
             $client = new Client();
-            $response = $client->request('GET',
-                'https://oapi.dingtalk.com/gettoken',
-                ['query' => ['appkey' => $appkey, 'appsecret' => $AppSecret]]
-            );
+            if ($type == 'self') {
+                $response = $client->request('GET',
+                    $url,
+                    ['query' => $set]
+                );
+            } else {
+                $response = $client->request('POST',
+                    $url,
+                    ['query' => $set]
+                );
+            }
             $res = json_decode($response->getBody()->getContents());
-            Cache::set($cacheKey, $res->access_token, 7000);
-            return $res->access_token;
+            switch ($type) {
+                case 'self':
+                case 'customize':
+                    Cache::set($cacheKey, $res->access_token, 7000);
+                    return $res->access_token;
+                case 'suite':
+                    Cache::set($cacheKey, $res->suite_access_token, 7000);
+                    return $res->suite_access_token;
+            }
+            return  '';
         }
     }
 
