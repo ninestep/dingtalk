@@ -30,6 +30,14 @@ class DingTalk
      */
     public function __construct($config = [])
     {
+        if (empty($config)){
+            $config = Cache::get('config');
+        }else{
+            Cache::set('config',$config);
+        }
+        if (empty($config)){
+            throw new DingTalkException('配置信息错误');
+        }
         self::$config = $config;
     }
 

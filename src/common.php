@@ -9,10 +9,18 @@ class common extends DingTalk
 {
     public static function config($key = null)
     {
-        if ($key != null) {
-            return self::$config[$key];
+        if (Cache::has('config')) {
+            $config = Cache::get('config');
         } else {
-            return self::$config;
+            throw new DingTalkException('配置信息为空');
+        }
+        if ($key != null) {
+            if (empty($config[$key])){
+                throw new DingTalkException($key.'配置信息为空');
+            }
+            return $config[$key];
+        } else {
+            return $config;
         }
     }
 
