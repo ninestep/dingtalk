@@ -9,11 +9,16 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 class Cache extends DingTalk
 {
     private static $type = 'file';
-    private static $cache;
+    private static $cache = null;
 
     public function __construct($config = [])
     {
         parent::__construct($config);
+        self::buildCache();
+    }
+
+    public static function buildCache()
+    {
         self::$cache = new FilesystemAdapter('', 0, "cache");
     }
 
@@ -25,6 +30,9 @@ class Cache extends DingTalk
      */
     public static function has($name)
     {
+        if (self::$cache==null){
+            self::buildCache();
+        }
         return self::$cache->hasItem($name);
     }
 
@@ -36,6 +44,9 @@ class Cache extends DingTalk
      */
     public static function get($name)
     {
+        if (self::$cache==null){
+            self::buildCache();
+        }
         $data = self::$cache->getItem($name);
         return $data->get();
     }
@@ -49,7 +60,9 @@ class Cache extends DingTalk
      */
     public static function set($name, $value, $expire = 0)
     {
-
+        if (self::$cache==null){
+            self::buildCache();
+        }
         $demoOne = self::$cache->getItem($name);
         $demoOne->set($value);
         if (!empty($expire)) {
