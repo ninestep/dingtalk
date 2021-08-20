@@ -15,8 +15,8 @@ class common extends DingTalk
             throw new DingTalkException('配置信息为空');
         }
         if ($key != null) {
-            if (empty($config[$key])){
-                throw new DingTalkException($key.'配置信息为空');
+            if (empty($config[$key])) {
+                throw new DingTalkException($key . '配置信息为空');
             }
             return $config[$key];
         } else {
@@ -95,7 +95,7 @@ class common extends DingTalk
         ]);
         $data = json_decode($res->getBody()->getContents(), true);
         if ($data['errcode'] == 0) {
-            return empty($data['result']) ? $data : $data['result'];
+            return isset($data['result']) ? $data['result'] : $data;
         } else {
             throw new DingTalkException($data['errmsg'], $data['errcode']);
         }
