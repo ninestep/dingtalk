@@ -1,6 +1,9 @@
 <?php
+namespace Shenhou\Tests;
 
+use Shenhou\Dingtalk\DingTalk;
 
+require __DIR__.'/../vendor/autoload.php';
 class DingTest
 {
     private $dingtalk;
@@ -11,15 +14,38 @@ class DingTest
             //自定义固定字符串。
             'nonceStr' => 'qwe123',
             //应用的标识
-            'agentId' => '1174082692',
+            'agentId' => '1273361157',
             //应用的标识
-            'AppKey' => 'dingy7qj9muiygzmp4zi',
-            'AppSecret' => '-TiZ64lOceMUQ-stbDZg3g0vzyw81lCA8QklIP224TbDicCEZQ8SMQcVu1gMY57O',
+            'AppKey' => '',
+            //如果是定制应用，输入定制应用的CustomKey
+            'CustomKey' => 'suitek4hnec7ytbszn3mw',
+            //如果是定制应用，输入定制应用的CustomSecret，
+            'AppSecret' => '',
+            'CustomSecret' => '-6E-fanab1mCHRSh-78ThLTA7LX8uKtbKxqqD2E6hB0xzIwrI3qQLIs5c_uDT4HN',
+            //钉钉推送的suiteTicket。
+            'suiteTicket' => 'sadasdasdasdasda',
             //时间戳
             'timeStamp' => time(),
             //企业id
-            'corpId' => 'ding2757e0a18a1c1b64ee0f45d8e4f7c288'
+            'corpId' => 'ding059b08b496f51f9235c2f4657eb6378f'
         ];
-        $this->dingtalk = new \Shenhou\Dingtalk\DingTalk($config);
+        try {
+            $this->dingtalk = new DingTalk($config);
+        } catch (\Shenhou\Dingtalk\DingTalkException $e) {
+        }
+    }
+
+    public function register()
+    {
+        $callback = $this->dingtalk->callback('dingtalk',
+            'hvnzd2y8jkhx8yoo4483xxxx123456789asdfghjkli',
+            'ding059b08b496f51f9235c2f4657eb6378f');
+        $res = $callback->register([
+            'attendance_check_record'
+        ], 'http://ybdd.vaiwan.com/callback');
+        print_r($res);
     }
 }
+
+$d = new DingTest();
+$d->register();

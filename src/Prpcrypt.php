@@ -1,6 +1,7 @@
 <?php
 
 namespace Shenhou\Dingtalk;
+
 use Exception;
 
 class Prpcrypt
@@ -26,8 +27,7 @@ class Prpcrypt
             // $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
 
             //使用自定义的填充方式对明文进行补位填充
-            $pkc_encoder = new PKCS7Encoder;
-            $text = $pkc_encoder->encode($text);
+            $text = $this->encode($text);
             // mcrypt_generic_init($module, $this->key, $iv);
             // //加密
             // $encrypted = mcrypt_generic($module, $text);
@@ -39,9 +39,9 @@ class Prpcrypt
 
             //print(base64_encode($encrypted));
             //使用BASE64对加密后的字符串进行编码
-            return array(ErrorCode::$OK, base64_encode($encrypted));
+            return array(0, base64_encode($encrypted));
         } catch (Exception $e) {
-            return array(ErrorCode::$EncryptAESError, null);
+            return array(900007, null);
         }
     }
 
@@ -63,14 +63,13 @@ class Prpcrypt
 
             // return $decrypted;
         } catch (Exception $e) {
-            return array(ErrorCode::$DecryptAESError, null);
+            return array(900008, null);
         }
 
 
         try {
             //去除补位字符
-            $pkc_encoder = new PKCS7Encoder;
-            $result = $pkc_encoder->decode($decrypted);
+            $result = $this->decode($decrypted);
             //去除16位随机字符串,网络字节序和AppId
             if (strlen($result) < 16)
                 return "";
@@ -80,11 +79,10 @@ class Prpcrypt
             $xml_content = substr($content, 4, $xml_len);
             $from_corpid = substr($content, $xml_len + 4);
         } catch (Exception $e) {
-            print $e;
-            return array(ErrorCode::$DecryptAESError, null);
+            return array(900008, null);
         }
         if ($from_corpid != $corpid)
-            return array(ErrorCode::$ValidateSuiteKeyError, null);
+            return array(900010, null);
 
 
         return array(0, $xml_content);
@@ -101,6 +99,30 @@ class Prpcrypt
             $str .= $str_pol[mt_rand(0, $max)];
         }
         return $str;
+    }
+
+    function encode($text)
+    {
+        $text_length = strlen($text);
+        $amount_to_pad = 32 - ($text_length % 32);
+        if ($amount_to_pad == 0) {
+            $amount_to_pad = 32;
+        }
+        $pad_chr = chr($amount_to_pad);
+        $tmp = "";
+        for ($index = 0; $index < $amount_to_pad; $index++) {
+            $tmp .= $pad_chr;
+        }
+        return $text . $tmp;
+    }
+
+    function decode($text)
+    {
+        $pad = ord(substr($text, -1));
+        if ($pad < 1 || $pad > 32) {
+            $pad = 0;
+        }
+        return substr($text, 0, (strlen($text) - $pad));
     }
 
 }

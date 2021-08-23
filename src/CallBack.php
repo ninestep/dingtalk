@@ -93,7 +93,7 @@ class CallBack
      * @param string $nonce 随机字符串
      * @param string $encrypt 加密信息
      * @param int|null $timeStamp 时间戳
-     * @return array
+     * @return mixed
      * @throws DingTalkException
      */
     public function decrypt(string $signature, string $nonce, string $encrypt, int $timeStamp = null): array
@@ -133,7 +133,7 @@ class CallBack
             // return ['ErrorCode'=>$result[0], 'data' => ''];
             throw new DingTalkException('DecryptAESError');
         }
-        return $result[1];
+        return json_decode($result[1],true);
 
     }
     private function getSHA1($token, $timestamp, $nonce, $encrypt_msg): array

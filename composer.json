@@ -7,6 +7,11 @@
       "Shenhou\\Dingtalk\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Shenhou\\Tests\\": "test/"
+    }
+  },
   "authors": [
     {
       "name": "yb",

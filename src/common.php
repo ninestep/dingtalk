@@ -4,6 +4,8 @@ namespace Shenhou\Dingtalk;
 // 应用公共文件
 //该公共方法获取和全局缓存js-sdk需要使用的access_token
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Cache\InvalidArgumentException;
 
 class common extends DingTalk
 {
@@ -34,7 +36,9 @@ class common extends DingTalk
     /**
      * 获取AccessToken缓存接口
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws DingTalkException
+     * @throws GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public static function getAccessToken()
     {
@@ -75,14 +79,37 @@ class common extends DingTalk
             }
             $set = ['appkey' => $appkey, 'appsecret' => $AppSecret];
             if ($type == 'customize') {
+                $timeStamp = self::config('timeStamp') * 1000;
+                $suiteTicket = self::config('suiteTicket');
+                $key = self::config('CustomSecret');
+                $signature = $timeStamp . "\n" . $suiteTicket;
+                $signature = hash_hmac('sha256', $signature,
+                    $key, true);
+                $signature = base64_encode($signature);
+                $url .= '?signature=' . $signature .
+                    '&timestamp=' . $timeStamp .
+                    '&suiteTicket=' . $suiteTicket .
+                    '&accessKey=' . $appkey;
                 $set = [
                     'accessKey' => $appkey,
-                    'accessSecret' => $AppSecret,
-                    'suiteTicket' => self::config('suiteTicket'),
+                    'timestamp' => $timeStamp,
+                    'signature' => $signature,
+                    'suiteTicket' => $suiteTicket,
                     'auth_corpid' => self::config('corpId'),
                 ];
             }
             if ($type == 'suite') {
+                $timeStamp = self::config('timeStamp');
+                $suiteTicket = self::config('suiteTicket');
+                $key = self::config('SuiteSecret');
+                $signature = $timeStamp . "\n" . $suiteTicket;
+                $signature = hash_hmac('sha256', $signature,
+                    $key, true);
+                $signature = base64_encode($signature);
+                $url .= '?signature=' . $signature .
+                    '&timestamp=' . $timeStamp .
+                    '&suiteTicket=' . $suiteTicket .
+                    '&accessKey=' . $key;
                 $set = [
                     'suite_key' => $appkey,
                     'suite_secret' => $AppSecret,
@@ -98,20 +125,27 @@ class common extends DingTalk
             } else {
                 $response = $client->request('POST',
                     $url,
-                    ['query' => $set]
+                    [
+                        'headers' => ['Content-Type' => 'application/json'],
+                        'json' => $set
+                    ]
                 );
             }
             $res = json_decode($response->getBody()->getContents());
-            switch ($type) {
-                case 'self':
-                case 'customize':
-                    Cache::set($cacheKey, $res->access_token, 7000);
-                    return $res->access_token;
-                case 'suite':
-                    Cache::set($cacheKey, $res->suite_access_token, 7000);
-                    return $res->suite_access_token;
+            if ($res->errcode == 0) {
+                switch ($type) {
+                    case 'self':
+                    case 'customize':
+                        Cache::set($cacheKey, $res->access_token, 7000);
+                        return $res->access_token;
+                    case 'suite':
+                        Cache::set($cacheKey, $res->suite_access_token, 7000);
+                        return $res->suite_access_token;
+                }
+            } else {
+                throw new DingTalkException($res->errmsg);
             }
-            return  '';
+            return '';
         }
     }
 
@@ -156,10 +190,21 @@ class common extends DingTalk
             'timeout' => 30,
             'allow_redirects' => false,
         ]);
-        $data['access_token'] = self::getAccessToken();
-        $res = $client->request('POST', $uri, [
-            'form_params' => $data
-        ]);
+        try {
+            $data['access_token'] = self::getAccessToken();
+        } catch (GuzzleException $e) {
+            throw new DingTalkException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new DingTalkException($e->getMessage());
+        } catch (DingTalkException $e) {
+            throw new DingTalkException($e->getMessage());
+        }
+        $uri .= '?access_token=' . $data['access_token'];
+        $res = $client->request('POST', $uri,
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => $data
+            ]);
         $data = json_decode($res->getBody()->getContents(), true);
         if ($data['errcode'] == 0) {
             return isset($data['result']) ? $data['result'] : $data;
