@@ -109,4 +109,9 @@ class DingTalk
     {
         return new CallBack($token, $aesKey, $ownerKey);
     }
+
+    public function attendance()
+    {
+        return new Attendance();
+    }
 }

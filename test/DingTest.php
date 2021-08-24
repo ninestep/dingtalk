@@ -1,6 +1,8 @@
 <?php
 namespace Shenhou\Tests;
 
+use DateInterval;
+use DateTime;
 use Shenhou\Dingtalk\DingTalk;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -44,6 +46,17 @@ class DingTest
             'attendance_check_record'
         ], 'http://ybdd.vaiwan.com/callback');
         print_r($res);
+    }
+
+    public function attendance()
+    {
+        $attendance = $this->dingtalk->attendance();
+        $objDateTime = new DateTime('NOW');
+        $dateTo = $objDateTime->format('Y-m-d H:i:s');
+        $dateFrom = $objDateTime
+            ->sub(new DateInterval('P7D'))
+            ->format('Y-m-d H:i:s');
+        return $attendance->list($dateFrom,$dateTo,[]);
     }
 }
 
