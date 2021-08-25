@@ -3,6 +3,8 @@
 
 namespace Shenhou\Dingtalk;
 
+use Shenhou\Dingtalk\topapi\Processinstance;
+
 /**
  * Class DingTalk
  * @package Shenhou\Dingtalk
@@ -15,27 +17,27 @@ class DingTalk
      * DingTalk constructor.
      * @param array $config
      *         $config = [
-                    //自定义固定字符串。
-                    'nonceStr' => 'qwe123',
-                    //应用的标识
-                    'agentId' => '1273361157',
-                    //应用的标识
-                    'AppKey' => 'suitek4hnec7ytbszn3mw',
-                    //如果是定制应用，输入定制应用的CustomKey
-                    'CustomKey'=>'',
+     * //自定义固定字符串。
+     * 'nonceStr' => 'qwe123',
+     * //应用的标识
+     * 'agentId' => '1273361157',
+     * //应用的标识
+     * 'AppKey' => 'suitek4hnec7ytbszn3mw',
+     * //如果是定制应用，输入定制应用的CustomKey
+     * 'CustomKey'=>'',
      *              // 如果是第三方企业应用，输入第三方企业应用的SuiteKey
      *              'SuiteKey'=>'',
-                    //如果是定制应用，输入定制应用的CustomSecret，
-                    'AppSecret' => '-6E-fanab1mCHRSh-78ThLTA7LX8uKtbKxqqD2E6hB0xzIwrI3qQLIs5c_uDT4HN',
-                    'CustomSecret'=>'',
+     * //如果是定制应用，输入定制应用的CustomSecret，
+     * 'AppSecret' => '-6E-fanab1mCHRSh-78ThLTA7LX8uKtbKxqqD2E6hB0xzIwrI3qQLIs5c_uDT4HN',
+     * 'CustomSecret'=>'',
      *              //如果是第三方企业应用，输入第三方企业应用的SuiteSecret
      *              'SuiteSecret'=>'',
-                    //钉钉推送的suiteTicket。
-                    'suiteTicket'=>'',
-                    //时间戳
-                    'timeStamp' => time(),
-                    //企业id
-                    'corpId' => 'ding059b08b496f51f9235c2f4657eb6378f'
+     * //钉钉推送的suiteTicket。
+     * 'suiteTicket'=>'',
+     * //时间戳
+     * 'timeStamp' => time(),
+     * //企业id
+     * 'corpId' => 'ding059b08b496f51f9235c2f4657eb6378f'
      *      ];
      */
     public function __construct($config = [])
@@ -110,8 +112,17 @@ class DingTalk
         return new CallBack($token, $aesKey, $ownerKey);
     }
 
-    public function attendance()
+    public function attendance(): Attendance
     {
         return new Attendance();
+    }
+
+    /**
+     * 官方工作流
+     * @return Processinstance
+     */
+    public function processinstance(): Processinstance
+    {
+        return new Processinstance();
     }
 }

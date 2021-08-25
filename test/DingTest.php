@@ -58,7 +58,14 @@ class DingTest
             ->format('Y-m-d H:i:s');
         return $attendance->list($dateFrom,$dateTo,[]);
     }
+
+    public function processinstance()
+    {
+        $process = $this->dingtalk->processinstance();
+        $info = $process->get('df00592d-ad1a-4678-99ec-f231f37a1e85');
+        print_r($info);
+    }
 }
 
 $d = new DingTest();
-$d->register();
+$d->processinstance();
