@@ -204,7 +204,7 @@ class common extends DingTalk
         $res = $client->request('POST', $uri,
             [
                 'headers' => ['Content-Type' => 'application/json'],
-                'json' => array_filter($data)
+                'json' => $data
             ]);
         $data = json_decode($res->getBody()->getContents(), true);
         if ($data['errcode'] == 0) {

@@ -22,17 +22,20 @@ class Processinstance
      */
     public function listids($process_code, $start_time, $end_time, $size = 20, $cursor = 0, $userid_list = [])
     {
-        if (count($userid_list)>10){
-            throw new DingTalkException('起userid列表，最大列表长度为10');
+        if (count($userid_list) > 10) {
+            throw new DingTalkException('发起userid列表，最大列表长度为10');
         }
-        return common::requestPost('/topapi/processinstance/listids', [
+        $data = [
             'process_code' => $process_code,
             'start_time' => $start_time,
             'end_time' => $end_time,
             'size' => $size,
             'cursor' => $cursor,
-            'userid_list' => implode(',', $userid_list)
-        ]);
+        ];
+        if (!empty($userid_list)) {
+            $data['userid_list'] = implode(',', $userid_list);
+        }
+        return common::requestPost('/topapi/processinstance/listids', $data);
     }
 
     /**
