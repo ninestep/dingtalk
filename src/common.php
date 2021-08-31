@@ -185,6 +185,7 @@ class common extends DingTalk
      */
     public static function requestPost($uri, $data)
     {
+        // todo : 此处需要增加密钥失效后重新申请密钥的功能
         $client = new Client([
             'base_uri' => 'https://oapi.dingtalk.com',
             'timeout' => 30,
@@ -203,7 +204,7 @@ class common extends DingTalk
         $res = $client->request('POST', $uri,
             [
                 'headers' => ['Content-Type' => 'application/json'],
-                'json' => $data
+                'json' => array_filter($data)
             ]);
         $data = json_decode($res->getBody()->getContents(), true);
         if ($data['errcode'] == 0) {
