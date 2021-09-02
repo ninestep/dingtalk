@@ -4,6 +4,8 @@
 namespace Shenhou\Dingtalk\topapi;
 
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Shenhou\Dingtalk\common;
 use Shenhou\Dingtalk\DingTalkException;
 
@@ -20,7 +22,7 @@ class Processinstance
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function listids($process_code, $start_time, $end_time, $size = 20, $cursor = 0, $userid_list = [])
+    public function listids($process_code, $start_time, $end_time, $size = 20, $cursor = 0, $userid_list = []): array
     {
         if (count($userid_list) > 10) {
             throw new DingTalkException('发起userid列表，最大列表长度为10');
@@ -45,11 +47,42 @@ class Processinstance
      * @throws DingTalkException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function get($process_instance_id)
+    public function get($process_instance_id): array
     {
         $res = common::requestPost('/topapi/processinstance/get', [
             'process_instance_id' => $process_instance_id
         ]);
         return $res['process_instance'];
+    }
+
+    /**
+     * 获取审批附件
+     * @param string $process_instance_id 审批单实例id
+     * @param string $file_id 文件id
+     * @param string $path 文件保存位置
+     * @return string 文件保存位置
+     * @throws DingTalkException
+     * @throws GuzzleException
+     */
+    public function file_url_get($process_instance_id, $file_id, $path): string
+    {
+        $res = common::requestPost('/topapi/processinstance/file/url/get', [
+            'request' => [
+                'process_instance_id' => $process_instance_id,
+                'file_id' => $file_id,
+            ]
+        ]);
+        $uri = $res['download_uri'];
+        try {
+            $client = new Client();
+            $response = $client->request('get', $uri, ['save_to' => $path]);
+            if ($response->getStatusCode() == 200) {
+                return $path;
+            } else {
+                throw new DingTalkException('下载失败');
+            }
+        } catch (GuzzleException $e) {
+            throw new DingTalkException($e->getMessage());
+        }
     }
 }
