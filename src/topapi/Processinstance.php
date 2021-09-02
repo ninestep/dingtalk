@@ -75,7 +75,7 @@ class Processinstance
         $uri = $res['download_uri'];
         try {
             $client = new Client();
-            $response = $client->request('get', $uri, ['save_to' => $path]);
+            $response = $client->request('get', $uri, ['sink' => $path]);
             if ($response->getStatusCode() == 200) {
                 return $path;
             } else {
