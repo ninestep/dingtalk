@@ -59,12 +59,12 @@ class Processinstance
      * 获取审批附件
      * @param string $process_instance_id 审批单实例id
      * @param string $file_id 文件id
-     * @param string $path 文件保存位置
+     * @param string $path 文件保存位置,如果不提供，直接返回下载地址
      * @return string 文件保存位置
      * @throws DingTalkException
      * @throws GuzzleException
      */
-    public function file_url_get($process_instance_id, $file_id, $path): string
+    public function file_url_get($process_instance_id, $file_id, $path = null): string
     {
         $res = common::requestPost('/topapi/processinstance/file/url/get', [
             'request' => [
@@ -73,6 +73,9 @@ class Processinstance
             ]
         ]);
         $uri = $res['download_uri'];
+        if (empty($path)) {
+            return $uri;
+        }
         try {
             $client = new Client();
             $response = $client->request('get', $uri, ['sink' => $path]);
