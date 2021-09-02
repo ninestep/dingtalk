@@ -197,5 +197,16 @@ class User
         return true;
     }
 
+    /**
+     * 根据手机号获取userid
+     * @param string $mobile 用户的手机号。
+     * @return string 用户id
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getbymobile($mobile)
+    {
+        $res = common::requestPost('/topapi/v2/user/getbymobile',['mobile'=>$mobile]);
+        return $res['userid'];
+    }
 
 }
