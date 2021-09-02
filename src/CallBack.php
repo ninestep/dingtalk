@@ -51,7 +51,7 @@ class CallBack
      * @param string $plain 加密数据
      * @param int $timeStamp 时间戳
      * @param string $nonce 随机字符串
-     * @return false|string
+     * @return array
      * @throws DingTalkException
      */
     public function encrypt(string $plain, int $timeStamp, string $nonce)
@@ -79,12 +79,12 @@ class CallBack
         }
         $signature = $array[1];
 
-        return json_encode(array(
+        return [
             "msg_signature" => $signature,
             "encrypt" => $encrypt,
             "timeStamp" => $timeStamp,
             "nonce" => $nonce
-        ));
+        ];
     }
 
     /**
