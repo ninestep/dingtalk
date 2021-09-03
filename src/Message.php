@@ -21,7 +21,7 @@ class Message
             throw new DingTalkException('发送对象不能为空');
         }
         $data = [
-            'msg' => json_encode($msg),
+            'msg' => $msg,
             'agent_id' => common::config('agentId'),
         ];
         if (!empty($userid_list)){
