@@ -38,7 +38,7 @@ class CallBack
     public function register(array $call_back_tag, string $url): array
     {
         $uri = '/call_back/register_call_back';
-        return common::requestPost($uri, [
+        return DingTalk::requestPost($uri, [
             'call_back_tag' => json_encode($call_back_tag),
             'token' => $this->token,
             'aes_key' => $this->aesKey,

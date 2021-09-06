@@ -31,7 +31,7 @@ class Attendance
         if (count($userIdList) > 50) {
             throw new DingTalkException('员工在企业内的userid列表，最多不能超过50个。');
         }
-        $res = common::requestPost('/attendance/list', [
+        $res = DingTalk::requestPost('/attendance/list', [
             'workDateFrom' => $workDateFrom,
             'workDateTo' => $workDateTo,
             'userIdList' => $userIdList,

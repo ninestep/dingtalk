@@ -3,14 +3,19 @@ namespace Shenhou\Dingtalk;
 
 
 class JsApi{
+    private $nonceStr = '';
+    public function __construct($nonceStr)
+    {
+        $this->nonceStr = $nonceStr;
+    }
+
     /**
      * 计算dd.config的签名参数
      **/
     public function DdConfigSign($url, $timestamp)
     {
-        $config = common::config();
-        $plain = 'jsapi_ticket=' . common::getJsapiTicket() .
-            '&noncestr=' . $config['nonceStr'] .
+        $plain = 'jsapi_ticket=' . DingTalk::getJsapiTicket() .
+            '&noncestr=' . $this->nonceStr .
             '&timestamp=' . $timestamp .
             '&url=' . $url;
         return sha1($plain);

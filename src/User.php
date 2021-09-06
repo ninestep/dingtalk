@@ -15,7 +15,7 @@ class User
      */
     public function getUserInfo(string $code): array
     {
-        return common::requestPost('/topapi/v2/user/getuserinfo', [
+        return DingTalk::requestPost('/topapi/v2/user/getuserinfo', [
             'code' => $code
         ]);
     }
@@ -30,7 +30,7 @@ class User
      */
     public function list(int $dept_id = 1, int $cursor = 0, int $size = 10): array
     {
-        return common::requestPost('/topapi/v2/user/list', [
+        return DingTalk::requestPost('/topapi/v2/user/list', [
             'dept_id' => $dept_id,
             'cursor' => $cursor,
             'size' => $size
@@ -45,7 +45,7 @@ class User
      */
     public function listid(int $dept_id = 1): array
     {
-        return common::requestPost('/topapi/user/listid', [
+        return DingTalk::requestPost('/topapi/user/listid', [
             'dept_id' => $dept_id
         ]);
     }
@@ -59,7 +59,7 @@ class User
      */
     public function get(string $userid, string $language = 'zh_CN'): array
     {
-        return common::requestPost('/topapi/v2/user/get', [
+        return DingTalk::requestPost('/topapi/v2/user/get', [
             'userid' => $userid,
             'language' => $language
         ]);
@@ -127,7 +127,7 @@ class User
             'init_password' => $init_password,
         ];
         $data = array_filter($data);
-        $res = common::requestPost('/topapi/v2/user/create', $data);
+        $res = DingTalk::requestPost('/topapi/v2/user/create', $data);
         return $res['userid'];
     }
 
@@ -193,7 +193,7 @@ class User
             'init_password' => $init_password,
         ];
         $data = array_filter($data);
-        common::requestPost('/topapi/v2/user/update', $data);
+        DingTalk::requestPost('/topapi/v2/user/update', $data);
         return true;
     }
 
@@ -205,7 +205,7 @@ class User
      */
     public function getbymobile($mobile)
     {
-        $res = common::requestPost('/topapi/v2/user/getbymobile', ['mobile' => $mobile]);
+        $res = DingTalk::requestPost('/topapi/v2/user/getbymobile', ['mobile' => $mobile]);
         return $res['userid'];
     }
 

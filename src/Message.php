@@ -22,7 +22,7 @@ class Message
         }
         $data = [
             'msg' => $msg,
-            'agent_id' => common::config('agentId'),
+            'agent_id' => DingTalk::config('agentId'),
         ];
         if (!empty($userid_list)){
             $data['userid_list'] = implode(',', $userid_list);
@@ -33,7 +33,7 @@ class Message
         if ($to_all_user == true){
             $data['to_all_user'] = true;
         }
-        $res = common::requestPost('/topapi/message/corpconversation/asyncsend_v2', $data);
+        $res = DingTalk::requestPost('/topapi/message/corpconversation/asyncsend_v2', $data);
         return $res;
     }
 }

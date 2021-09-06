@@ -6,7 +6,7 @@ namespace Shenhou\Dingtalk\topapi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Shenhou\Dingtalk\common;
+use Shenhou\Dingtalk\DingTalk;
 use Shenhou\Dingtalk\DingTalkException;
 
 class Processinstance
@@ -37,7 +37,7 @@ class Processinstance
         if (!empty($userid_list)) {
             $data['userid_list'] = implode(',', $userid_list);
         }
-        return common::requestPost('/topapi/processinstance/listids', $data);
+        return DingTalk::requestPost('/topapi/processinstance/listids', $data);
     }
 
     /**
@@ -49,7 +49,7 @@ class Processinstance
      */
     public function get($process_instance_id): array
     {
-        $res = common::requestPost('/topapi/processinstance/get', [
+        $res = DingTalk::requestPost('/topapi/processinstance/get', [
             'process_instance_id' => $process_instance_id
         ]);
         return $res['process_instance'];
@@ -66,7 +66,7 @@ class Processinstance
      */
     public function file_url_get($process_instance_id, $file_id, $path = null): string
     {
-        $res = common::requestPost('/topapi/processinstance/file/url/get', [
+        $res = DingTalk::requestPost('/topapi/processinstance/file/url/get', [
             'request' => [
                 'process_instance_id' => $process_instance_id,
                 'file_id' => $file_id,

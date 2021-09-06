@@ -15,7 +15,7 @@ class Dept
      */
     public function listsub($dept_id, $language = 'zh_CN')
     {
-        return common::requestPost('/topapi/v2/department/listsub', [
+        return DingTalk::requestPost('/topapi/v2/department/listsub', [
             'dept_id' => $dept_id,
             'language' => $language
         ]);
@@ -57,7 +57,7 @@ class Dept
             'order' => $order,
             'source_identifier' => $source_identifier,
         ];
-        $res = common::requestPost('/topapi/v2/department/create', array_filter($data));
+        $res = DingTalk::requestPost('/topapi/v2/department/create', array_filter($data));
         return $res['dept_id'];
     }
 }

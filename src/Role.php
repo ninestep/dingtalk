@@ -16,7 +16,7 @@ class Role
      */
     public function simplelist(string $role_id, int $offset=0, int $size=100): array
     {
-        return common::requestPost('/topapi/role/simplelist',[
+        return DingTalk::requestPost('/topapi/role/simplelist',[
             'role_id'=>$role_id,
             'size'=>$size,
             'offset'=>$offset
@@ -32,7 +32,7 @@ class Role
      */
     public function list(int $offset=0, int $size=200): array
     {
-        return common::requestPost('/topapi/role/list',[
+        return DingTalk::requestPost('/topapi/role/list',[
             'size'=>$size,
             'offset'=>$offset
         ]);
