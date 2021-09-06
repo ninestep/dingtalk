@@ -171,7 +171,7 @@ class User
         $data = [
             'name' => $name,
             'mobile' => $mobile,
-            'dept_id_list' => $dept_id_list,
+            'dept_id_list' => implode(',', $dept_id_list),
             'userid' => $userid,
             'hide_mobile' => $hide_mobile,
             'telephone' => $telephone,
