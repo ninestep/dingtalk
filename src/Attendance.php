@@ -70,7 +70,7 @@ class Attendance
         $res = DingTalk::requestPost('/attendance/listRecord', [
             'workDateFrom' => $workDateFrom,
             'workDateTo' => $workDateTo,
-            'userIdList' => $userIdList,
+            'userIds' => $userIdList,
             'isI18n' => $isI18n
         ]);
         return $res['recordresult'];
