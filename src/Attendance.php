@@ -68,8 +68,8 @@ class Attendance
             throw new DingTalkException('员工在企业内的userid列表，最多不能超过50个。');
         }
         $res = DingTalk::requestPost('/attendance/listRecord', [
-            'workDateFrom' => $workDateFrom,
-            'workDateTo' => $workDateTo,
+            'checkDateFrom' => $workDateFrom,
+            'checkDateTo' => $workDateTo,
             'userIds' => $userIdList,
             'isI18n' => $isI18n
         ]);
