@@ -60,4 +60,21 @@ class Dept
         $res = DingTalk::requestPost('/topapi/v2/department/create', array_filter($data));
         return $res['dept_id'];
     }
+
+    /**
+     * 获取部门详情
+     * @param int $dept_id 部门ID，根部门ID为1。
+     * @param string $language 通讯录语言：zh_CN（默认）：中文en_US：英文
+     * @return array 部门信息
+     * @throws DingTalkException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get(int $dept_id=1, string $language='zh_CN'): array
+    {
+        $data = [
+            'dept_id'=>$dept_id,
+            'language'=>$language
+        ];
+        return DingTalk::requestPost('/topapi/v2/department/get', array_filter($data));
+    }
 }
