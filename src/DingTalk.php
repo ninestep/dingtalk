@@ -116,14 +116,14 @@ class DingTalk
             }
             $set = ['appkey' => $appkey, 'appsecret' => $AppSecret];
             if ($type == 'customize') {
-                $timeStamp = self::config('timeStamp') * 1000;
+                $timeStamp = intval(microtime(true)*1000);
                 $suiteTicket = self::config('suiteTicket');
                 $key = self::config('CustomSecret');
                 $signature = $timeStamp . "\n" . $suiteTicket;
                 $signature = hash_hmac('sha256', $signature,
                     $key, true);
                 $signature = base64_encode($signature);
-                $url .= '?signature=' . $signature .
+                $url .= '?signature=' . urlencode($signature) .
                     '&timestamp=' . $timeStamp .
                     '&suiteTicket=' . $suiteTicket .
                     '&accessKey=' . $appkey;
