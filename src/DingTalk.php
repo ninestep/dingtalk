@@ -230,7 +230,7 @@ class DingTalk
                 throw new DingTalkException($res['errmsg'], $res['errcode']);
             }
             $jsck = $res['ticket'];
-            Cache::set('jsapi_ticket', $jsck, 7000);
+            Cache::set($cacheKey, $jsck, 7000);
             return $jsck;
         }
 
