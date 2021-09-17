@@ -195,8 +195,22 @@ class DingTalk
      */
     public static function getJsapiTicket()
     {
-        if (Cache::has('jsapi_ticket')) {
-            return Cache::get('jsapi_ticket');
+        $type = 'self';
+        $appkey = self::config('AppKey');
+        if (empty($appkey)) {
+            $appkey = self::config('CustomKey');
+            $type = 'customize';
+        }
+        if (empty($appkey)) {
+            $appkey = self::config('SuiteKey');
+            $type = 'suite';
+        }
+        if (empty($appkey)) {
+            throw new DingTalkException('配置获取错误');
+        }
+        $cacheKey = 'jsapi_ticket_' . $type . '_' . $appkey;
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
         } else {
             try {
                 $token = self::getAccessToken();
