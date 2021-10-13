@@ -62,3 +62,5 @@ $this->dingtalk = new DingTalk($config);
 |角色|获取指定角色的员工列表||
 |角色|获取角色列表||
 |js-api|计算dd.config的签名参数||
+|免登|获取微应用后台免登的access_token||
+|免登|获取应用管理员的身份信息||
