@@ -422,6 +422,14 @@ class DingTalk
         $accessToken = self::getAccessToken();
         return new Tasks($accessToken);
     }
+    /**
+     * 免登
+     * @return Sso
+     */
+    public function sso(): Sso
+    {
+        return new Sso();
+    }
 
 
 }
