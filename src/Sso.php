@@ -16,12 +16,12 @@ class Sso
     public function getuserinfo($code)
     {
         $access_token = $this->gettoken();
-        return DingTalk::requestPost('/sso/getuserinfo', [
+        return DingTalk::requestGet('/sso/getuserinfo', [
             'code' => $code,
             'access_token' => $access_token
-        ]);
+        ], false);
     }
-    
+
     /**
      * 获取微应用后台免登的access_token
      * @return string
@@ -32,10 +32,10 @@ class Sso
     {
         $corpid = DingTalk::config('corpId');
         $corpsecret = DingTalk::config('corpsecret');
-        $res = DingTalk::requestPost('/sso/gettoken', [
+        $res = DingTalk::requestGet('/sso/gettoken', [
             'corpid' => $corpid,
             'corpsecret' => $corpsecret
-        ]);
+        ], false);
         return $res['access_token'];
     }
 }

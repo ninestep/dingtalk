@@ -326,6 +326,47 @@ class DingTalk
     }
 
     /**
+     * get请求
+     * @param string $uri 地址
+     * @param array $data 请求参数
+     * @param bool $access_token 是否传输access_token，默认传输
+     * @return array 返回值
+     * @throws DingTalkException
+     * @throws GuzzleException
+     */
+    public static function requestGet($uri, $data,$access_token=true)
+    {
+        // todo : 此处需要增加密钥失效后重新申请密钥的功能
+        $client = new Client([
+            'base_uri' => 'https://oapi.dingtalk.com',
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
+        if ($access_token){
+            try {
+                $data['access_token'] = self::getAccessToken();
+            } catch (GuzzleException $e) {
+                throw new DingTalkException($e->getMessage());
+            } catch (InvalidArgumentException $e) {
+                throw new DingTalkException($e->getMessage());
+            } catch (DingTalkException $e) {
+                throw new DingTalkException($e->getMessage());
+            }
+        }
+//        $uri .= '?access_token=' . $data['access_token'];
+        $res = $client->request('GET', $uri,
+            [
+                'query' => $data
+            ]);
+        $data = json_decode($res->getBody()->getContents(), true);
+        if ($data['errcode'] == 0) {
+            return isset($data['result']) ? $data['result'] : $data;
+        } else {
+            throw new DingTalkException($data['errmsg'], $data['errcode']);
+        }
+    }
+
+    /**
      * 部门
      * @return Dept
      */
