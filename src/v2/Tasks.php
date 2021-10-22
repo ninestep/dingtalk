@@ -8,13 +8,17 @@ use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Dingtalk;
 use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Models\CreateTodoTaskHeaders;
 use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Models\CreateTodoTaskRequest;
 use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Models\CreateTodoTaskRequest\detailUrl;
+use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Models\UpdateTodoTaskHeaders;
+use AlibabaCloud\SDK\Dingtalk\Vtodo_1_0\Models\UpdateTodoTaskRequest;
 use AlibabaCloud\Tea\Utils\Utils\RuntimeOptions;
 use Darabonba\OpenApi\Models\Config;
+use Exception;
 use Shenhou\Dingtalk\DingTalkException;
 
 class Tasks
 {
     private $accessToken = '';
+
     public function __construct($accessToken)
     {
         $this->accessToken = $accessToken;
@@ -58,7 +62,7 @@ class Tasks
             "pcUrl" => $pcUrl
         ]);
         $createTodoTaskRequest = new CreateTodoTaskRequest([
-            "operatorId"=>$creatorId,
+            "operatorId" => $creatorId,
             "sourceId" => $sourceId,
             "subject" => $subject,
             "creatorId" => $creatorId,
@@ -71,11 +75,45 @@ class Tasks
             "priority" => $priority
         ]);
         try {
-           return $client->createTodoTaskWithOptions(
+            return $client->createTodoTaskWithOptions(
                 $creatorId,
                 $createTodoTaskRequest, $createTodoTaskHeaders,
                 new RuntimeOptions([]));
         } catch (\Exception $err) {
+            throw new DingTalkException($err->getMessage());
+        }
+    }
+
+    /**
+     * 更新钉钉待办任务
+     * @param string $unionId 当前访问资源所归属用户的unionId，和操作者的unionId保持一致，可通过根据userid获取用户详情接口获取。
+     * @param string $taskId 待办ID。
+     * @param string $operatorId 当前操作者的用户的unionId，可通过根据userid获取用户详情接口获取
+     * @param string $subject 待办标题。
+     * @param string $description 待办描述。
+     * @param string $dueTime 截止时间，Unix时间戳，单位毫秒。
+     * @param string $done 完成状态
+     * @param array $executorIds 执行者的unionId列表，可通过根据userid获取用户详情接口获取
+     * @param array $participantIds 参与者的unionId列表，可通过根据userid获取用户详情接口获取
+     */
+    public function edit($unionId, $taskId, $operatorId, $subject = '', $description = '', $dueTime = '', $done = '', $executorIds = [], $participantIds = [])
+    {
+        $client = self::createClient();
+        $updateTodoTaskHeaders = new UpdateTodoTaskHeaders([]);
+        $updateTodoTaskHeaders->xAcsDingtalkAccessToken = $this->accessToken;
+        $data = [
+            "operatorId" => $operatorId,
+            "subject" => $subject,
+            "description" => $description,
+            "dueTime" => $dueTime,
+            "done" => $done,
+            "executorIds" => $executorIds,
+            "participantIds" => $participantIds
+        ];
+        $updateTodoTaskRequest = new UpdateTodoTaskRequest(array_filter($data));
+        try {
+            $client->updateTodoTaskWithOptions($unionId, $taskId, $updateTodoTaskRequest, $updateTodoTaskHeaders, new RuntimeOptions([]));
+        } catch (Exception $err) {
             throw new DingTalkException($err->getMessage());
         }
     }
