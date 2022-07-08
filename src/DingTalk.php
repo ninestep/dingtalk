@@ -13,6 +13,7 @@ use AlibabaCloud\Tea\Utils\Utils;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Cache\InvalidArgumentException;
+use Shenhou\Dingtalk\topapi\ocr\Structured;
 use Shenhou\Dingtalk\topapi\Processinstance;
 use Shenhou\Dingtalk\v2\Tasks;
 
@@ -334,7 +335,7 @@ class DingTalk
      * @throws DingTalkException
      * @throws GuzzleException
      */
-    public static function requestGet($uri, $data,$access_token=true)
+    public static function requestGet($uri, $data, $access_token = true)
     {
         // todo : 此处需要增加密钥失效后重新申请密钥的功能
         $client = new Client([
@@ -342,7 +343,7 @@ class DingTalk
             'timeout' => 30,
             'allow_redirects' => false,
         ]);
-        if ($access_token){
+        if ($access_token) {
             try {
                 $data['access_token'] = self::getAccessToken();
             } catch (GuzzleException $e) {
@@ -463,6 +464,7 @@ class DingTalk
         $accessToken = self::getAccessToken();
         return new Tasks($accessToken);
     }
+
     /**
      * 免登
      * @return Sso
@@ -472,5 +474,13 @@ class DingTalk
         return new Sso();
     }
 
+    /**
+     * ocr识别
+     * @return topapi\ocr\Structured
+     */
+    public function OcrStructured(): Structured
+    {
+        return new topapi\ocr\Structured();
+    }
 
 }
