@@ -30,7 +30,6 @@ class Structured
      */
     public function recognize(string $type, string $image_url)
     {
-
         $res = DingTalk::requestPost('/topapi/ocr/structured/recognize', [
             'type' => $type,
             'image_url' => $image_url,
