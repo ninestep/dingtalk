@@ -34,6 +34,6 @@ class Structured
             'type' => $type,
             'image_url' => $image_url,
         ]);
-        return $res['result'];
+        return $res;
     }
 }
