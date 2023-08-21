@@ -1,0 +1,27 @@
+<?php
+return [
+    //自定义固定字符串。
+    'nonceStr' => 'xxxx',
+    //应用的标识
+    'agentId' => 'xxxx',
+    //应用的标识
+    'AppKey' => 'xxxx',
+    //如果是定制应用，输入定制应用的CustomKey
+    'CustomKey' => '',
+    //如果是定制应用，输入定制应用的CustomSecret，
+    'AppSecret' => '-xxxx-stbDZg3g0vzyw81lCA8QklIP224TbDicCEZQ8SMQcVu1gMY57O',
+    'CustomSecret' => '',
+    //钉钉推送的suiteTicket。
+    'suiteTicket' => 'xxxx',
+    //时间戳
+    'timeStamp' => time(),
+    //企业id
+    'corpId' => 'xxxx',
+    //回调参数
+    'token' => 'xxxx',
+    //回调参数
+    'aesKey' => 'xxxxx',
+
+    //回调中处理的流程号
+    'processCode' => ['xxxx-AC7264FA-06D2-432A-9923-F904126CD3D1'],
+];

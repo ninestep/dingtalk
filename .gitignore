@@ -1,2 +1,4 @@
 /ENV/
 /vendor/
+/.idea
+/test/config.php
