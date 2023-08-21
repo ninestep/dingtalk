@@ -100,7 +100,7 @@ class Attendance
      * groupId转换为groupKey
      * @param string $groupId 考勤组ID。
      * @param string $opUserId 操作人的userId。
-     * @return string 考勤组ID。
+     * @return array|string
      * @throws DingTalkException
      */
     public function groupsIdToKey(string $groupId,string $opUserId='')
