@@ -156,6 +156,6 @@ class Attendance
             'op_userid' => $opUserid,
             'position_list' => $positionList,
         ]);
-        return $res['result'];
+        return $res;
     }
 }

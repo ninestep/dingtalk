@@ -14,7 +14,7 @@ class DingTest
 
     public function __construct()
     {
-        $config = require 'config.php.example';
+        $config = require 'config.php';
         try {
             $this->dingtalk = new DingTalk($config);
         } catch (\Shenhou\Dingtalk\DingTalkException $e) {
@@ -71,7 +71,8 @@ class DingTest
 
     public function groupPositionsAdd()
     {
-        $res = $this->dingtalk->attendance()->groupPositionsAdd('B78369389BA1BFECCD6AC23FB8268CC5', [[
+        $res = $this->dingtalk->attendance()->groupPositionsAdd(
+            'B78369389BA1BFECCD6AC23FB8268CC5', [[
             "foreign_id" => "0151E23B1",
             "address" => "阿里巴巴西溪北苑",
             "latitude" => "30.123",
