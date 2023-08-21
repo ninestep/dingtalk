@@ -156,6 +156,10 @@ class Attendance
             'op_userid' => $opUserid,
             'position_list' => $positionList,
         ]);
-        return $res;
+        if ($res['errcode']==0){
+            return $res['result'];
+        }else{
+            throw new DingTalkException($res['errmsg'], $res['errcode']);
+        }
     }
 }

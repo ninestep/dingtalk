@@ -319,19 +319,13 @@ class DingTalk
                 'json' => $data
             ]);
         $data = json_decode($res->getBody()->getContents(), true);
-        if (empty($data['result'])){
-            if ($data['errcode'] == 0) {
-                return isset($data['result']) ? $data['result'] : $data;
-            } else {
-                throw new DingTalkException($data['errmsg'], $data['errcode']);
-            }
-        }else{
-            $data = $data['result'];
-            if ($data['errcode'] == 0) {
-                return isset($data['result']) ? $data['result'] : $data;
-            } else {
-                throw new DingTalkException($data['errmsg'], $data['errcode']);
-            }
+        if (empty($data['errcode'])) {
+            $data['errcode'] = 0;
+        }
+        if ($data['errcode'] == 0) {
+            return isset($data['result']) ? $data['result'] : $data;
+        } else {
+            throw new DingTalkException($data['errmsg'], $data['errcode']);
         }
     }
 
