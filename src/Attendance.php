@@ -17,8 +17,8 @@ class Attendance
      * @param int $limit 表示获取考勤数据的条数，最大不能超过50条。
      * @param false $isI18n 是否为海外企业使用： true：海外平台使用 false（默认）：国内平台使用
      * workDateFrom ≤ x ≤ workDateEnd，即起始与结束工作日最多相隔7天（包含7天）
-     * @throws DingTalkException|\GuzzleHttp\Exception\GuzzleException
      * @return array ['list'考勤列表,hasMore,是否还有更多]
+     * @throws DingTalkException|\GuzzleHttp\Exception\GuzzleException
      */
     public function list(string $workDateFrom, string $workDateTo, array $userIdList, int $offset = 0, int $limit = 50, bool $isI18n = false)
     {
@@ -46,15 +46,16 @@ class Attendance
             'hasMore' => $res['hasMore']
         ];
     }
-/**
+
+    /**
      * 获取打卡详情
      * @param string $workDateFrom 查询考勤打卡记录的起始工作日。格式为“yyyy-MM-dd HH:mm:ss”，HH:mm:ss可以使用00:00:00，将返回此日期从0点到24点的结果
      * @param string $workDateTo 查询考勤打卡记录的结束工作日。格式为“yyyy-MM-dd HH:mm:ss”，HH:mm:ss可以使用00:00:00，将返回此日期从0点到24点的结果。
      * @param array $userIdList 员工在企业内的userid列表，最多不能超过50个。
      * @param false $isI18n 是否为海外企业使用： true：海外平台使用 false（默认）：国内平台使用
      * workDateFrom ≤ x ≤ workDateEnd，即起始与结束工作日最多相隔7天（包含7天）
-     * @throws DingTalkException|\GuzzleHttp\Exception\GuzzleException
      * @return array ['list'考勤列表,hasMore,是否还有更多]
+     * @throws DingTalkException|\GuzzleHttp\Exception\GuzzleException
      */
     public function listRecord(string $workDateFrom, string $workDateTo, array $userIdList, bool $isI18n = false)
     {
@@ -86,7 +87,7 @@ class Attendance
      * @throws DingTalkException
      * @throws GuzzleException
      */
-    public function getSimpleGroups(int $offset,int $size=10)
+    public function getSimpleGroups(int $offset, int $size = 10)
     {
 
         $res = DingTalk::requestPost('/topapi/attendance/getsimplegroups', [
@@ -103,7 +104,7 @@ class Attendance
      * @return array|string
      * @throws DingTalkException
      */
-    public function groupsIdToKey(string $groupId,string $opUserId='')
+    public function groupsIdToKey(string $groupId, string $opUserId = '')
     {
 
         $res = DingTalk::requestPost('/topapi/attendance/groups/idtokey', [
@@ -112,6 +113,7 @@ class Attendance
         ]);
         return $res;
     }
+
     /**
      * groupKey转换为groupId
      * @param string $groupId 考勤组ID。
@@ -119,7 +121,7 @@ class Attendance
      * @return string 考勤组ID。
      * @throws DingTalkException
      */
-    public function groupsKeyToKId(string $groupKey,string $opUserId='')
+    public function groupsKeyToKId(string $groupKey, string $opUserId = '')
     {
 
         $res = DingTalk::requestPost('/topapi/attendance/groups/keytoid', [
@@ -148,7 +150,7 @@ class Attendance
      * @throws DingTalkException
      * @throws GuzzleException
      */
-    public function groupPositionsAdd(string $groupKey, array $positionList, string $opUserid='')
+    public function groupPositionsAdd(string $groupKey, array $positionList, string $opUserid = '')
     {
 
         $res = DingTalk::requestPost('/topapi/attendance/group/positions/add', [
@@ -156,9 +158,55 @@ class Attendance
             'op_userid' => $opUserid,
             'position_list' => $positionList,
         ]);
-        if ($res['errcode']==0){
+        if ($res['errcode'] == 0) {
             return $res['result'];
-        }else{
+        } else {
+            throw new DingTalkException($res['errmsg'], $res['errcode']);
+        }
+    }
+
+    /**
+     * 批量删除地点
+     * @param string $groupKey 考勤组ID
+     * @param array $positionKeyList 要删除position的key列表，可通过批量查询地点接口获取，每次最多支持删除100个地点信息。
+     * @param string $opUserid 操作人userId。
+     * @return array
+     * @throws DingTalkException
+     * @throws GuzzleException
+     */
+    public function groupPositionsRemove(string $groupKey, array $positionKeyList, string $opUserid = ''): array
+    {
+
+        $res = DingTalk::requestPost('/topapi/attendance/group/positions/remove', [
+            'group_key' => $groupKey,
+            'op_userid' => $opUserid,
+            'position_key_list' => implode(',',$positionKeyList),
+        ]);
+        return $res;
+    }
+
+    /**
+     * 批量查询地点
+     * @param string $groupKey 考勤组ID
+     * @param string $cursor 上一批次的最后一个Id，默认为空。
+     * @param int $size 分页大小。
+     * @param string $opUserid 操作人userId。
+     * @return array
+     * @throws DingTalkException
+     * @throws GuzzleException
+     */
+    public function groupPositionsQuery(string $groupKey, string $cursor = '', int $size = 50, string $opUserid = ''): array
+    {
+
+        $res = DingTalk::requestPost('/topapi/attendance/group/positions/query', [
+            'cursor' => $cursor,
+            'size' => $size,
+            'op_userid' => $opUserid,
+            'group_key' => $groupKey,
+        ]);
+        if ($res['errcode'] == 0) {
+            return $res['result'];
+        } else {
             throw new DingTalkException($res['errmsg'], $res['errcode']);
         }
     }

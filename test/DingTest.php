@@ -81,6 +81,18 @@ class DingTest
         ]]);
         print_r($res);
     }
+    public function groupPositionsList($cursor)
+    {
+        $res = $this->dingtalk->attendance()->groupPositionsQuery(
+            'B78369389BA1BFECCD6AC23FB8268CC5',$cursor,1);
+        return $res;
+    }
+    public function groupPositionsRemove()
+    {
+        $res = $this->dingtalk->attendance()->groupPositionsRemove(
+            'B78369389BA1BFECCD6AC23FB8268CC5',['966D0E263D696DC7B79CC791559D12C4']);
+        return $res;
+    }
 }
 
 $d = new DingTest();
@@ -88,4 +100,13 @@ $d = new DingTest();
 //$d->task();
 //$d->getSimpleGroups();
 //$d->groupsIdToKey();
-$d->groupPositionsAdd();
+//$d->groupPositionsAdd();
+//$res = $d->groupPositionsList('');
+//print_r($res);
+//if ($res['has_more']){
+//    $res = $d->groupPositionsList($res['position_list'][0]['position_key']);
+//    print_r($res);
+//}
+
+$res = $d->groupPositionsRemove();
+print_r($res);
